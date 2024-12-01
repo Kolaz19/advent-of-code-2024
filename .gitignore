@@ -1,0 +1,3 @@
+*.clang-format
+*testInput.txt
+*object_files*
