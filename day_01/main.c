@@ -7,6 +7,7 @@
 
 void fillStringFromFile(char *values);
 void sortList(int *list);
+int getAmountInList(int num, int *list);
 
 int main() {
     char input[LINE_LENGTH * AMOUNT_LINES];
@@ -24,21 +25,26 @@ int main() {
         curLine = curLine + LINE_LENGTH;
         curIndex++;
     }
-	sortList(list1);
-	sortList(list2);
 
-	int sum = 0;
-	for (int i = 0; i < AMOUNT_LINES; i++) {
-		if (list1[i] > list2[i]) {
-			sum = sum + (list1[i] - list2[i]);
-		} else {
-			sum = sum + (list2[i] - list1[i]);
-		}
-	}
-	printf("%d\n", sum);
+    int sum = 0;
+    for (int i = 0; i < AMOUNT_LINES; i++) {
+        sum += list1[i] * getAmountInList(list1[i], list2);
+    }
+
+    printf("%d\n", sum);
 }
 
-//Bubble sort
+int getAmountInList(int num, int *list) {
+    int amount = 0;
+    for (int i = 0; i < AMOUNT_LINES; i++) {
+        if (list[i] == num) {
+            amount++;
+        }
+    }
+    return amount;
+}
+
+// Bubble sort
 void sortList(int *list) {
     bool sorted = false;
     while (!sorted) {
