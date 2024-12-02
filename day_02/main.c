@@ -7,7 +7,7 @@
 
 void fillStringFromFile(char *values);
 bool isSafe(int maxIndex, int *arr);
-
+bool isSafeWithMissing(int maxIndex, int *arr);
 
 int main() {
     char input[LINE_LENGTH * AMOUNT_LINES];
@@ -32,7 +32,7 @@ int main() {
             }
 
             // Check safety of line at end of line
-            if (isSafe(amountNumbersInLine-1, numbersLine)) {
+            if (isSafe(amountNumbersInLine - 1, numbersLine) || isSafeWithMissing(amountNumbersInLine - 1, numbersLine)) {
                 sum++;
             }
             amountNumbersInLine = 0;
@@ -46,7 +46,7 @@ int main() {
             } else {
                 curChar += 2;
             }
-			amountNumbersInLine++;
+            amountNumbersInLine++;
         }
     }
 
@@ -70,6 +70,25 @@ bool isSafe(int maxIndex, int *arr) {
         }
     }
     return true;
+}
+
+// Create reduced array for every valid integer in array
+// Check this reduced array with isSafe()
+bool isSafeWithMissing(int maxIndex, int *arr) {
+    int reduced[20];
+    int curIndex = 0;
+    for (int i = 0; i <= maxIndex; i++) {
+        for (int k = 0; k <= maxIndex; k++) {
+            if (i != k) {
+                reduced[curIndex++] = arr[k];
+            }
+        }
+        curIndex = 0;
+        if (isSafe(maxIndex - 1, reduced)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void fillStringFromFile(char *values) {
