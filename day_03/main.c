@@ -8,6 +8,8 @@
 
 int fillStringFromFile(char *values);
 bool isMultiplierExpression(char *start);
+bool isEnableExpression(char *start);
+bool isDisableExpression(char *start);
 
 int main() {
     char input[FILE_LEN];
@@ -20,8 +22,10 @@ int main() {
     int sum = 0;
     int firstNum = 0;
     int secondNum = 0;
+	bool enabled = true;
+
     do {
-        if (isMultiplierExpression(curChar)) {
+        if (enabled && isMultiplierExpression(curChar)) {
             // Advance to first number and extract it from string
             curChar += 4;
             if (sscanf(curChar, "%d", &firstNum) != 1) {
@@ -38,10 +42,33 @@ int main() {
                 exit(EXIT_FAILURE);
             }
             sum += firstNum * secondNum;
+        } else if (isEnableExpression(curChar)) {
+			enabled = true;
+        } else if (isDisableExpression(curChar)) {
+			enabled = false;
         }
     } while (*(++curChar) != '\0');
 
     printf("Result:\t%d\n", sum);
+}
+
+bool isEnableExpression(char *start) {
+    char *curPos = start;
+    if (*(curPos++) != 'd' || *(curPos++) != 'o' || *(curPos++) != '(' || *(curPos++) != ')') {
+        return false;
+    }
+    return true;
+}
+
+bool isDisableExpression(char *start) {
+    char *curPos = start;
+    if (*(curPos++) != 'd' || *(curPos++) != 'o' || *(curPos++) != 'n' || *(curPos++) != '\'') {
+        return false;
+    }
+    if (*(curPos++) != 't' || *(curPos++) != '(' || *(curPos++) != ')') {
+        return false;
+    }
+    return true;
 }
 
 bool isMultiplierExpression(char *start) {
