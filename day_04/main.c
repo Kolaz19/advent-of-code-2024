@@ -7,19 +7,8 @@
 #define LEN_LINES 140
 #define FILE_LEN LEN_ROW *LEN_LINES + 1
 
-typedef enum offset {
-    LEFT = -1,
-    NO_OFFSET = 0,
-    RIGHT = 1
-} offset;
-
 int fillStringFromFile(char *values);
-int getNumberOfXmas(char *cur, char *start);
-bool inSequence(char *cur, int indx);
-bool isLeft(char *cur, char *start);
-bool isRight(char *cur, char *start);
-bool isUnder(char *cur, char *start, offset off);
-bool isAbove(char *cur, char *start, offset off);
+bool isMas(char *cur, char *start);
 
 int main() {
     char input[FILE_LEN];
@@ -30,123 +19,47 @@ int main() {
     char *curChar = input;
     int sum = 0;
     do {
-        sum += getNumberOfXmas(curChar, input);
+        if (isMas(curChar, input)) {
+            sum++;
+        }
     } while (*(++curChar) != '\0');
     printf("Result: %d", sum);
 }
 
-bool isLeft(char *cur, char *start) {
-    char *tmp = cur;
-
-    for (int i = 0; i < 4; i++) {
-        if (tmp < start) {
-            return false;
-        }
-        if (!inSequence(tmp, i)) {
-            return false;
-        }
-		tmp--;
-    }
-
-    return true;
-}
-
-bool isRight(char *cur, char *start) {
-    char *tmp = cur;
-
-    for (int i = 0; i < 4; i++) {
-        if (tmp > start + FILE_LEN) {
-            return false;
-        }
-        if (!inSequence(tmp, i)) {
-            return false;
-        }
-		tmp++;
-    }
-    return true;
-}
-
-bool isAbove(char *cur, char *start, offset off) {
-    char *tmp = cur;
-
-    for (int i = 0; i < 4; i++) {
-        if (tmp < start) {
-            return false;
-        }
-        if (!inSequence(tmp, i)) {
-            return false;
-        }
-        tmp -= LEN_ROW;
-        tmp += off;
-    }
-    return true;
-}
-
-bool isUnder(char *cur, char *start, offset off) {
-    char *tmp = cur;
-
-    for (int i = 0; i < 4; i++) {
-        if (tmp > start + FILE_LEN) {
-            return false;
-        }
-        if (!inSequence(tmp, i)) {
-            return false;
-        }
-        tmp += LEN_ROW;
-        tmp += off;
-    }
-    return true;
-}
-
-bool inSequence(char *cur, int indx) {
-    switch (indx) {
-    case 0:
-        return *cur == 'X';
-    case 1:
-        return *cur == 'M';
-    case 2:
-        return *cur == 'A';
-    case 3:
-        return *cur == 'S';
-    }
-    return false;
-}
-
-int getNumberOfXmas(char *cur, char *start) {
+bool isMas(char *cur, char *start) {
     int sum = 0;
 
-	//Check if current char is 'X'
-    if (!inSequence(cur, 0)) {
-        return sum;
-    }
-	//Check left & right
-    if (isLeft(cur, start)) {
-        sum++;
-    }
-    if (isRight(cur, start)) {
-        sum++;
-    }
-	//Check up & down
-    if (isAbove(cur, start, NO_OFFSET)) {
-        sum++;
-    }
-    if (isAbove(cur, start, LEFT)) {
-        sum++;
-    }
-    if (isAbove(cur, start, RIGHT)) {
-        sum++;
-    }
-    if (isUnder(cur, start, NO_OFFSET)) {
-        sum++;
-    }
-    if (isUnder(cur, start, LEFT)) {
-        sum++;
-    }
-    if (isUnder(cur, start, RIGHT)) {
-        sum++;
+	//Check middle char 'A' and if this character is in first or last row
+    if (*cur != 'A' || (cur - LEN_ROW) < start || (cur + LEN_ROW) > (start + FILE_LEN)) {
+        return false;
     }
 
-    return sum;
+	//Collect surrounding characters
+    char surrounding[4];
+    // UP LEFT
+    surrounding[0] = *(cur - (LEN_ROW + 1));
+    // UP RIGHT
+    surrounding[1] = *(cur - (LEN_ROW - 1));
+    // DOWN LEFT
+    surrounding[2] = *(cur + (LEN_ROW - 1));
+    // DOWN RIGHT
+    surrounding[3] = *(cur + (LEN_ROW + 1));
+
+	for (int i = 0; i < 4; i++) {
+		if (surrounding[i] != 'M' && surrounding[i] != 'S') {
+			return false;
+		}
+	}
+
+	//Opposing characters have to differ
+	if (surrounding[0] == surrounding[3]) {
+		return false;
+	}
+	if (surrounding[1] == surrounding[2]) {
+		return false;
+	}
+
+    return true;
 }
 
 int fillStringFromFile(char *values) {
