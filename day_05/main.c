@@ -65,25 +65,37 @@ char *processLine(int *mappingForNumber, char *cur, int *pageNumber) {
         cur += 3;
     }
 
+    bool wasFaulty = false;
+    bool stillFaulty = true;
     // Loop through row / current line
-    for (int i = 0; i < amountNumbersInLine; i++) {
-        int *numStart = mappingForNumber + (LEN_MAP_NUMBERS * numbers[i]);
-        // Loop through mappings for number of left side
-        for (int k = 0; k < LEN_MAP_NUMBERS; k++) {
-            if (numStart[k] == 0) {
-                break;
-            }
-            // Check if mapped number on right appears before current number in row
-            for (int v = 0; v < i; v++) {
-                if (numStart[k] == numbers[v]) {
-                    *pageNumber = 0;
-					return tmp - 1;
+    do {
+        stillFaulty = false;
+        for (int i = 0; i < amountNumbersInLine; i++) {
+            int *numStart = mappingForNumber + (LEN_MAP_NUMBERS * numbers[i]);
+            // Loop through mappings for number of left side
+            for (int k = 0; k < LEN_MAP_NUMBERS; k++) {
+                if (numStart[k] == 0) {
+                    break;
+                }
+                // Check if mapped number on right appears before current number in row
+                for (int v = 0; v < i; v++) {
+                    if (numStart[k] == numbers[v]) {
+                        wasFaulty = true;
+                        stillFaulty = true;
+                        int tmpNumber = numbers[v];
+                        numbers[v] = numbers[i];
+                        numbers[i] = tmpNumber;
+                    }
                 }
             }
         }
-    }
+    } while (stillFaulty);
 
-    *pageNumber = numbers[(amountNumbersInLine - 1) / 2];
+    if (wasFaulty) {
+        *pageNumber = numbers[(amountNumbersInLine - 1) / 2];
+    } else {
+        *pageNumber = 0;
+    }
     return tmp - 1;
 }
 
