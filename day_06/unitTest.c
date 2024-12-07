@@ -18,7 +18,7 @@ Test(guard, directionTurn) {
 
     int amountMoves = 0;
     while (!willGuardLeaveMap(testString, strlen(testString), 4, &guard)) {
-        updateGuard(&guard, 4);
+        updateGuard(&guard, 4, NULL, NULL);
         amountMoves++;
     }
     cr_assert_eq(amountMoves, 4);

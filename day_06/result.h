@@ -1,8 +1,10 @@
 #ifndef RESULT
 #define RESULT
+#include <stdbool.h>
 
 
-void addPosToResult(char* curChar, char** result, int arrSize);
+void addPosToList(char* curChar, char** result, int arrSize);
+bool alreadyInList(char* curChar, char** list, int arrSize);
 int getResult(char** result, int arrSize);
 
 

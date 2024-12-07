@@ -1,7 +1,7 @@
-#include "result.h"
+#include <stdbool.h>
 #include <stdlib.h>
 
-void addPosToResult(char* curChar, char** result, int arrSize) {
+void addPosToList(char* curChar, char** result, int arrSize) {
 	for (int i = 0; i < arrSize; i++) {
 		if (result[i] == curChar) {
 			return;
@@ -21,4 +21,15 @@ int getResult(char** result, int arrSize) {
 		sum++;
 	}
 	return sum;
+}
+
+bool alreadyInList(char* curChar, char** list, int arrSize) {
+	for (int i = 0; i < arrSize; i++) {
+		if (list[i] == NULL) {
+			return false;
+		} else if (list[i] == curChar) {
+			return true;
+		}
+	}
+	return false;
 }

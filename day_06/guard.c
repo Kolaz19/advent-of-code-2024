@@ -1,5 +1,6 @@
 #include "guard.h"
 #include <stdbool.h>
+#include <stdlib.h>
 // clang-format off
 #define turnRight(dir) if ((dir) == 3) { dir = 0; } else { dir++; }
 // clang-format on
@@ -51,11 +52,20 @@ bool willGuardLeaveMap(char *input, int filelen, int linelen, guard *guard) {
     }
 }
 
-void updateGuard(guard *guard, int linelen) {
-    char *futurePos = getFuturePos(guard, linelen);
-    if (*futurePos == '#') {
-        turnRight(guard->dir);
+
+// Return true when futurePos was free
+bool updateGuard(guard *mainGuard, int linelen, guard *copyOfGuard, char *optionalObstacle) {
+    char *futurePos = getFuturePos(mainGuard, linelen);
+    if (*futurePos == '#' || (optionalObstacle != NULL && futurePos == optionalObstacle)) {
+        turnRight(mainGuard->dir);
     } else {
-        guard->pos = futurePos;
+        if (copyOfGuard != NULL) {
+            copyOfGuard->pos = mainGuard->pos;
+            copyOfGuard->dir = mainGuard->dir;
+            turnRight(copyOfGuard->dir);
+        }
+        mainGuard->pos = futurePos;
+        return true;
     }
+    return false;
 }

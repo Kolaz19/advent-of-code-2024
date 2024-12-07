@@ -2,20 +2,21 @@
 #define GUARD
 #include <stdbool.h>
 
-typedef enum DIRECTION {
+typedef enum Direction {
 	L,
 	U,
 	R,
 	D
-}DIRECTION;
+}Direction;
 
 typedef struct guard {
 	char* pos;
-	DIRECTION dir;
+	Direction dir;
 }guard;
 
 void setStartingPos(char *input, guard* guard);
 bool willGuardLeaveMap(char *input, int filelen, int linelen, guard *guard);
-void updateGuard(guard *guard, int linelen);
+bool updateGuard(guard *mainGuard, int linelen, guard* copyOfGuard, char* optionalObstacle);
+char *getFuturePos(guard *guard, int linelen);
 
 #endif
