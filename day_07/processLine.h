@@ -4,7 +4,8 @@
 
 typedef enum operation {
     PLUS,
-    MULT
+    MULT,
+	CONCAT,
 } operation;
 
 bool isLegit(operation op, long long sum, int *numInArray, int indxCounter, long long result);

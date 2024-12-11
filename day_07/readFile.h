@@ -4,8 +4,8 @@
 //#define TEST
 #ifdef TEST
 #define NAME_FILE "testInput.txt"
-#define LEN_LINE 60
-#define AMOUNT_LINES 424
+#define LEN_LINE 50
+#define AMOUNT_LINES 9
 #define LEN_FILE LEN_LINE * AMOUNT_LINES
 #else
 

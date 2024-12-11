@@ -12,7 +12,6 @@ int main() {
     int arr[30];
     int amountNumbers;
     long long sum = 0;
-    printf("%s\n", input);
 
     do {
         curChar = getArrayFromString(curChar, &result, arr, &amountNumbers);
